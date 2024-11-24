@@ -3,20 +3,19 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>Laravel</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
         <script src="https://cdn.tailwindcss.com"></script>
+
         <script>
             const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time));
             const fetchProgress = async () => {
                 document.getElementById('jobProgress').innerText = '更新中…';
                 document.getElementById('jobProgressPercent').innerText = '';
-                await sleep(400);
+                await sleep(400); // 更新してるよ！ってわかるようにちょっと待つ
                 await fetch('/api/progress')
                     .then(response => response.json())
                     .then(data => {
@@ -32,9 +31,34 @@
                         document.getElementById('jobProgress').innerText = 'エラー';
                 });
             }
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const enqueue = async () => {
+                await fetch('/api/enqueue', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                }).finally(() => {
+                    fetchProgress();
+                });
+            }
+            const reset = async () => {
+                await fetch('/api/reset', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                }).finally(() => {
+                    fetchProgress();
+                });
+            }
             window.onload = function () {
                 fetchProgress()
                 document.getElementById('get-progress').addEventListener('click', fetchProgress);
+                document.getElementById('enqueue').addEventListener('click', enqueue);
+                document.getElementById('reset').addEventListener('click', reset);
             }
         </script>
     </head>
@@ -48,13 +72,22 @@
                     <div>
                         <h2 class="text-xl">Jobの操作</h2>
                         <div class="flex flex-col gap-2">
-                            <a href="{{route('enqueue')}}" class="px-3 py-2 bg-blue-500 text-white rounded-full text-center w-96">キューイング</a>
-                            <a href="{{route('reset')}}" class="px-3 py-2 bg-blue-500 text-white rounded-full text-center w-96">リセット</a>
+                            <button id="enqueue" class="py-2 bg-blue-500 text-white rounded-full text-center w-96 flex justify-center">
+                                <span class="material-symbols-outlined">send</span>
+                                キューイング
+                            </button>
+                            <button id="reset" class="py-2 bg-blue-500 text-white rounded-full text-center w-96 flex justify-center">
+                                <span class="material-symbols-outlined">delete</span>
+                                リセット
+                            </button>
                         </div>
                     </div>
                     <div class="flex flex-col gap-2">
                         <h2 class="text-xl">Jobの進行状況</h2>
-                        <button class="px-3 py-2 bg-blue-500 text-white rounded-full text-center w-96" id="get-progress">更新</button>
+                        <button id="get-progress" class="py-2 bg-blue-500 text-white rounded-full text-center w-96 flex justify-center">
+                            <span class="material-symbols-outlined">refresh</span>
+                            更新
+                        </button>
 
                         <div class="flex flex-col gap-2">
                             <p id="jobProgress"></p>
