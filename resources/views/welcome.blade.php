@@ -54,7 +54,7 @@
                     </div>
                     <div class="flex flex-col gap-2">
                         <h2 class="text-xl">Jobの進行状況</h2>
-                        <button  class="px-3 py-2 bg-blue-500 text-white rounded-full text-center w-96" id="get-progress">更新</button>
+                        <button class="px-3 py-2 bg-blue-500 text-white rounded-full text-center w-96" id="get-progress">更新</button>
 
                         <div class="flex flex-col gap-2">
                             <p id="jobProgress"></p>
