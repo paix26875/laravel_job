@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 class ExampleJob implements ShouldQueue, Contracts\ShowProgressInterface
 {
     use Queueable;
-    use Traits\ShowProgressTraits;
+    use Traits\ShowProgressTrait;
 
     private string $jobProgressId;
 

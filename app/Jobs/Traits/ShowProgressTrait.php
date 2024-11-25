@@ -4,7 +4,7 @@ namespace App\Jobs\Traits;
 
 use Illuminate\Support\Facades\Redis;
 
-trait ShowProgressTraits
+trait ShowProgressTrait
 {
     public function markAsWaiting(): void
     {
