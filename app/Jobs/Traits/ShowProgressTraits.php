@@ -10,10 +10,12 @@ trait ShowProgressTraits
     {
         Redis::command('SADD', ['waiting', $this->jobProgressId]);
     }
+
     public function markAsWip(): void
     {
         Redis::command('SMOVE', ['waiting', 'wip', $this->jobProgressId]);
     }
+
     public function markAsFinished(): void
     {
         Redis::command('SREM', ['wip', $this->jobProgressId]);
