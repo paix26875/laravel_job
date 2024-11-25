@@ -2,7 +2,9 @@
 
 namespace App\Jobs\Traits;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
+use Throwable;
 
 trait ShowProgressTrait
 {
@@ -22,5 +24,11 @@ trait ShowProgressTrait
         if (Redis::command('SCARD', ['wip']) === 0 && Redis::command('SCARD', ['waiting']) === 0) {
             Redis::command('DEL', ['total']);
         }
+    }
+
+    public function failed(?Throwable $exception): void
+    {
+        $this->markAsFinished();
+        Log::debug(get_class($this) . ': 処理が失敗しました。');
     }
 }
