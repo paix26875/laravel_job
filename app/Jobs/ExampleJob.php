@@ -5,7 +5,7 @@ namespace App\Jobs;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\Uid\Ulid;
+use Illuminate\Support\Str;
 
 class ExampleJob implements ShouldQueue, Contracts\ShowProgressInterface
 {
@@ -21,9 +21,8 @@ class ExampleJob implements ShouldQueue, Contracts\ShowProgressInterface
 
     public function __construct()
     {
-        $this->jobProgressId = Ulid::generate();
+        $this->jobProgressId = (string) Str::ulid();
         $this->markAsWaiting();
-        Log::debug('ExampleJobのコンストラクタが実行されました。');
     }
 
     public function handle(): void
